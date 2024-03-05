@@ -13,21 +13,36 @@ namespace Bulky.DataAccess.Repository
         {
             _db = db;
             _dbSet = _db.Set<T>();
+            _db.Products.Include(u => u.Category).Include(u => u.CategoryId);
         }
         public void Add(T entity)
         {
             _dbSet.Add(entity);
         }
 
-        public T Get(Expression<Func<T, bool>> filter)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperies = null)
         {
             IQueryable<T> query = _dbSet;
+            if (!string.IsNullOrEmpty(includeProperies))
+            {
+                foreach (var includProp in includeProperies.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includProp);
+                }
+            }
             return query.Where(filter).FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperies = null)
         {
             IQueryable<T> query = _dbSet;
+            if (!string.IsNullOrEmpty(includeProperies))
+            {
+                foreach (var includProp in includeProperies.Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries)) 
+                {
+                    query = query.Include(includProp);
+                }
+            }
             return query.ToList();
         }
 
