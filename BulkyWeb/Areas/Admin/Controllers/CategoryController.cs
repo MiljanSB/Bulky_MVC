@@ -18,7 +18,6 @@ namespace BulkyWeb.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            //List<Category> objCategoryList = _db.Categories.ToList();
             List<Category> categoryList = _unitOfWork.Category.GetAll().ToList();
 
             return View(categoryList);
@@ -76,11 +75,9 @@ namespace BulkyWeb.Areas.Admin.Controllers
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0) return NotFound();
-            Category category = _unitOfWork.Category.Get(u => u.Id == id);
-            //Category category = _db.Categories.Find(id); //on primary key
-            //Category category1 = _db.Categories.FirstOrDefault(u => u.Id == id);
-            //Category category2 = _db.Categories.Where(u => u.Id == id).FirstOrDefault();
+            Category category = _unitOfWork.Category.Get(u => u.Id == id);            
             if (category == null) return NotFound();
+
             return View(category);
         }
 
