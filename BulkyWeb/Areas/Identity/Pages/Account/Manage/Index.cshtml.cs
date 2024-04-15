@@ -6,9 +6,11 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Bulky.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace BulkyWeb.Areas.Identity.Pages.Account.Manage
 {
@@ -24,37 +26,25 @@ namespace BulkyWeb.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
+        
         public string Username { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [TempData]
         public string StatusMessage { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
+            public string? Name { get; set; }
+            [Display(Name = "Street address")]
+            public string? StreetAddress { get; set; }
+            public string? City { get; set; }
+            public string? State { get; set; }
+            [Display(Name = "Postal code")]
+
+            public string? PostalCode { get; set; }
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
@@ -64,12 +54,18 @@ namespace BulkyWeb.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var userAdditionalInfo = await _userManager.Users.OfType<ApplicationUser>().FirstOrDefaultAsync(u => u.Id == user.Id);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Name = userAdditionalInfo.Name,
+                StreetAddress = userAdditionalInfo.StreetAddress,
+                City = userAdditionalInfo.City,
+                State = userAdditionalInfo.State,
+                PostalCode = userAdditionalInfo.PostalCode
             };
         }
 
@@ -98,6 +94,14 @@ namespace BulkyWeb.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+
+            var userAdditionalInfo = await _userManager.Users.OfType<ApplicationUser>().FirstOrDefaultAsync(u => u.Id == user.Id);
+            userAdditionalInfo.Name = Input.Name;
+            userAdditionalInfo.StreetAddress = Input.StreetAddress;
+            userAdditionalInfo.City = Input.City;
+            userAdditionalInfo.State = Input.State;
+            userAdditionalInfo.PostalCode = Input.PostalCode;
+            await _userManager.UpdateAsync(userAdditionalInfo);
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
