@@ -129,7 +129,7 @@ namespace BulkyWeb.Areas.Admin.Controllers
             OrderVM.OrderHeader = _unitOfWork.OrderHeader.Get(u => u.Id == OrderVM.OrderHeader.Id, includeProperies: "ApplicationUser");
             OrderVM.OrderDetails = _unitOfWork.OrderDetail.GetAll(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperies: "Product");
 
-            var domain = "https://localhost:7023/";
+            var domain = Request.Scheme + "://" + Request.Host.Value + "/"; //get domain name dynamically
             var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + $"admin/order/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.Id}",
