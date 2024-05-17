@@ -9,6 +9,9 @@
 *.user
 *.userosscache
 *.sln.docstates
+appsettings.json
+appsettings.Development.json
+
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -232,7 +235,7 @@ _pkginfo.txt
 # Others
 ClientBin/
 ~$*
-*~
+
 *.dbmdl
 *.dbproj.schemaview
 *.jfm

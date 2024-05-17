@@ -61,6 +61,12 @@
                                             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Create User</a>
                                         }
                                     </li>
+                                    <li>
+                                        @if (User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">User Management</a>
+                                        }
+                                    </li>
                                 </ul>
                             </li>
                         }
@@ -94,6 +100,7 @@
     <script src="//cdn.datatables.net/2.0.0/js/dataTables.min.js" asp-append-version="true"></script>
     <script src="https://cdn.tiny.cloud/1/7wpgdrapb0q6hhfk16ggmex17tlix844a5czefs6eam13vd2/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
